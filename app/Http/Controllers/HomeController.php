@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\WeatherService;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
+
+/**
+ * Class HomeController
+ * @package App\Http\Controllers
+ */
+class HomeController extends Controller
+{
+    /**
+     * @var WeatherService
+     */
+    private $weatherService;
+
+    /**
+     * HomeController constructor.
+     * @param $weatherService
+     */
+    public function __construct(WeatherService $weatherService)
+    {
+        $this->weatherService = $weatherService;
+    }
+
+    /**
+     * @return View
+     */
+    public function index(): View
+    {
+        $weatherData = $this->weatherService->getCurrent();
+        $weatherData->wind->deg = array_get((array)$weatherData->wind, 'deg');
+        $weatherData->wind->degHuman = $this->weatherService->getDirectionByDeg(
+            array_get((array)$weatherData->wind, 'deg')
+        );
+
+        return view('home', compact('weatherData'));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
