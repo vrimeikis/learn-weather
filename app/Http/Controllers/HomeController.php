@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\WeatherService;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
 
 /**
  * Class HomeController

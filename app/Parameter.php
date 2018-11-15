@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace App;
 
+use App\Events\ParameterSavedEvent;
+use App\Events\ParameterSavingEvent;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -21,5 +23,10 @@ class Parameter extends Model
     protected $fillable = [
         'key',
         'value',
+    ];
+
+    protected $dispatchesEvents = [
+        'saving' => ParameterSavingEvent::class,
+        'saved' => ParameterSavedEvent::class,
     ];
 }
