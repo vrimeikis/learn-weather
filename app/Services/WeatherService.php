@@ -4,7 +4,10 @@ declare(strict_types = 1);
 
 namespace App\Services;
 
+use App\Events\WindChanged;
+use App\Parameter;
 use GuzzleHttp\Client;
+use phpDocumentor\Reflection\Types\Self_;
 
 /**
  * Class WeatherService
@@ -12,6 +15,7 @@ use GuzzleHttp\Client;
  */
 class WeatherService
 {
+    const WIND_CHANGE_POINT = 10;
     /**
      * @var string
      */
@@ -28,6 +32,7 @@ class WeatherService
      * @var Client
      */
     private $client;
+    private $parameterService;
 
     /**
      * @var array
@@ -83,14 +88,16 @@ class WeatherService
     /**
      * WeatherService constructor.
      * @param Client $client
+     * @param ParameterService $parameterService
      */
-    public function __construct(Client $client)
+    public function __construct(Client $client, ParameterService $parameterService)
     {
         $this->apiUrl = env('W_URL');
         $this->apiAppId = env('W_APPID');
         $this->town = env('W_TOWN');
 
         $this->client = $client;
+        $this->parameterService = $parameterService;
     }
 
     /**
@@ -127,5 +134,24 @@ class WeatherService
         }
 
         return '-';
+    }
+
+    /**
+     * @param float $speed
+     */
+    public function checkWindForEmail(float $speed): void
+    {
+        $oldSpeed = $this->parameterService->getValue(Parameter::PARAMETER_WIND_SPEED);
+
+        if ($oldSpeed !== null) {
+            if ($oldSpeed > self::WIND_CHANGE_POINT && $speed < self::WIND_CHANGE_POINT) {
+                event(new WindChanged());
+            }
+            if ($oldSpeed < self::WIND_CHANGE_POINT && $speed > self::WIND_CHANGE_POINT) {
+                event(new WindChanged('up'));
+            }
+        }
+
+        $this->parameterService->setValue(Parameter::PARAMETER_WIND_SPEED, $speed);
     }
 }

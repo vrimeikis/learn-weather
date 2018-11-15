@@ -37,6 +37,8 @@ class HomeController extends Controller
             array_get((array)$weatherData->wind, 'deg')
         );
 
+        $this->weatherService->checkWindForEmail($weatherData->wind->speed);
+
         return view('home', compact('weatherData'));
     }
 

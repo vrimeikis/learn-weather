@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\WindChanged;
+use App\Listeners\SendWindChangeListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -15,6 +17,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        WindChanged::class => [
+            SendWindChangeListener::class,
+        ],
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
