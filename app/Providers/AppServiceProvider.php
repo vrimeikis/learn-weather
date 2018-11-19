@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Observers\ParameterObserve;
+use App\Parameter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Parameter::observe(ParameterObserve::class);
     }
 
     /**
